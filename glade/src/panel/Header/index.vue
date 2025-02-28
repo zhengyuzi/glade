@@ -1,0 +1,16 @@
+<script setup lang="ts">
+import { homepage } from '../../../../package.json'
+</script>
+
+<template>
+  <div class="flex items-center justify-between">
+    <h1 class="text-gray-500 font-bold text-4xl select-none">
+      Glade
+    </h1>
+    <div class="flex space-x-4 children:(flex cursor-pointer pointer-events-auto text-4xl text-gray-500)">
+      <a class="hover:text-gray-400" target="_blank" :href="homepage">
+        <i class="i-mdi-github" />
+      </a>
+    </div>
+  </div>
+</template>
