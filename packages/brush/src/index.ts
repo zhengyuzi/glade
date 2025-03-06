@@ -1,0 +1,1 @@
+export { smooth } from './smooth'
