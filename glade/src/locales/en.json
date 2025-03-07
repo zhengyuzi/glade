@@ -12,11 +12,14 @@
   "reset_zoom": "Reset zoom",
   "selection": "Selection",
   "drag": "Drag",
-  "draw": "Draw",
+  "brush": "Brush",
   "text": "Text",
   "image": "Image",
   "send_backward": "Send backward",
   "bring_forward": "Bring forward",
   "send_to_back": "Send to back",
-  "bring_to_front": "Bring to front"
+  "bring_to_front": "Bring to front",
+  "color": "Color",
+  "stroke_width": "Stroke width",
+  "opacity": "Opacticy"
 }
