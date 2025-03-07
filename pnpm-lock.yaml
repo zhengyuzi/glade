@@ -62,6 +62,9 @@ importers:
       vue-i18n:
         specifier: ^11.1.0
         version: 11.1.1(vue@3.5.13(typescript@5.7.3))
+      vue-pick-colors:
+        specifier: ^1.8.0
+        version: 1.8.0(@popperjs/core@2.11.8)(vue@3.5.13(typescript@5.7.3))
     devDependencies:
       '@iconify/json':
         specifier: ^2.2.285
@@ -817,6 +820,9 @@ packages:
 
   '@polka/url@1.0.0-next.28':
     resolution: {integrity: sha512-8LduaNlMZGwdZ6qWrKlfa+2M4gahzFkprZiAt2TF8uS0qQgBizKXpXURqvTJ4WtmupWxaLqjRb2UCTe72mu+Aw==}
+
+  '@popperjs/core@2.11.8':
+    resolution: {integrity: sha512-P1st0aksCrn9sGZhp8GMYwBnQsbvAWsZAX44oXNNvLHGqAOcoVxmjZiohstwQ7SqKnbR47akdNi+uleWD8+g6A==}
 
   '@rollup/plugin-alias@5.1.1':
     resolution: {integrity: sha512-PR9zDb+rOzkRb2VD+EuKB7UC41vU5DIwZ5qqCpk0KJudcWAyi8rvYOhS7+L5aZCspw1stTViLgN5v6FF1p5cgQ==}
@@ -3263,6 +3269,12 @@ packages:
     peerDependencies:
       vue: ^3.0.0
 
+  vue-pick-colors@1.8.0:
+    resolution: {integrity: sha512-lIP28A1BZEPp0v0Y6m9lNbsC6jNM2LP+Dc2tJbUXiNRvDgXqBMe/msX3svqjspV4B+SZdPAjx75JY2zem0hA2Q==}
+    peerDependencies:
+      '@popperjs/core': ^2.11.2
+      vue: ^3.2.26
+
   vue-tsc@2.2.4:
     resolution: {integrity: sha512-3EVHlxtpMXcb5bCaK7QDFTbEkMusDfVk0HVRrkv5hEb+Clpu9a96lKUXJAeD/akRlkoA4H8MCHgBDN19S6FnzA==}
     hasBin: true
@@ -4014,6 +4026,8 @@ snapshots:
   '@pkgr/core@0.1.1': {}
 
   '@polka/url@1.0.0-next.28': {}
+
+  '@popperjs/core@2.11.8': {}
 
   '@rollup/plugin-alias@5.1.1(rollup@4.34.8)':
     optionalDependencies:
@@ -6917,6 +6931,11 @@ snapshots:
       '@intlify/core-base': 11.1.1
       '@intlify/shared': 11.1.1
       '@vue/devtools-api': 6.6.4
+      vue: 3.5.13(typescript@5.7.3)
+
+  vue-pick-colors@1.8.0(@popperjs/core@2.11.8)(vue@3.5.13(typescript@5.7.3)):
+    dependencies:
+      '@popperjs/core': 2.11.8
       vue: 3.5.13(typescript@5.7.3)
 
   vue-tsc@2.2.4(typescript@5.7.3):
