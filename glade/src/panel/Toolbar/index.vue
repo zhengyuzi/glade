@@ -6,8 +6,13 @@ import { fileToBase64 } from '@/utils'
 import { hotkey } from '@/utils/hotkeys'
 import { GLADE_CONFIG } from '@/utils/storage'
 import { useDraggable, useElementSize, useFileDialog } from '@vueuse/core'
+import { useI18n } from 'vue-i18n'
+
+const BrushTab = defineAsyncComponent(() => import('../Tooltabs/Brush/index.vue'))
 
 const { enablePlugin, disablePlugin, createImage } = inject<ReturnType<typeof useGlade>>('glade')!
+
+const { t } = useI18n()
 
 const {
   onChange: onImageChange,
@@ -33,7 +38,7 @@ const tools: ITool[] = [
     disable: () => disablePlugin('glade-plugin-drag-pan'),
   },
   {
-    name: 'draw',
+    name: 'brush',
     iconName: 'i-solar-pen-bold',
     enable: () => enablePlugin('glade-plugin-brush'),
     disable: () => disablePlugin('glade-plugin-brush'),
@@ -63,6 +68,8 @@ const { width: toolbarW, height: toolbarH } = useElementSize(draggableEl, {
 const currentTool = ref(tools[0].name)
 
 const isVertical = computed(() => GLADE_CONFIG.value.toolbar.direction === 'vertical')
+
+const ToolbarMenuShow = ref(false)
 
 const { style } = useDraggable(draggableEl, {
   initialValue: GLADE_CONFIG.value.toolbar,
@@ -107,6 +114,8 @@ function onDragEnd(position: Position) {
 }
 
 function handleSelectTool(name: string) {
+  ToolbarMenuShow.value = ['brush', 'text'].includes(name)
+
   if (currentTool.value !== name) {
     const lastTool = tools.find(item => item.name === currentTool.value)
     const tool = tools.find(item => item.name === name)
@@ -130,7 +139,7 @@ function switchDirection() {
 <template>
   <div
     ref="draggableEl"
-    :style="['position: fixed;z-index: 999;touch-action: none;', style]"
+    :style="['position:fixed;z-index:999;touch-action:none;', style]"
   >
     <GladeButtonGroup
       class="bg-gray-200 text-2xl p-1.5"
@@ -157,6 +166,17 @@ function switchDirection() {
       <GladeButton @click="switchDirection">
         <i class="i-f7-camera-rotate-fill" />
       </GladeButton>
+    </GladeButtonGroup>
+    <!-- Tools Tab -->
+    <GladeButtonGroup
+      v-show="ToolbarMenuShow"
+      class="absolute min-w-250px flex flex-col bg-gray-100 bg-opacity-60 border-opacity-50 p-2 space-y-3"
+      :class="isVertical ? 'top-0 left-[130%]' : 'left-0 top-[130%]'"
+    >
+      <h6 class="text-sm font-600 text-gray-600">
+        {{ t(currentTool) }} Options
+      </h6>
+      <BrushTab v-if="currentTool === 'brush'" />
     </GladeButtonGroup>
   </div>
 </template>
