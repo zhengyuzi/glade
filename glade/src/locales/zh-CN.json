@@ -21,5 +21,6 @@
   "bring_to_front": "置于顶层",
   "color": "颜色",
   "stroke_width": "笔触宽度",
+  "brush_type": "画笔类型",
   "opacity": "透明度"
 }
