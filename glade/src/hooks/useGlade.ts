@@ -72,6 +72,10 @@ export default function useGlade(target: MaybeRefOrGetter<HTMLDivElement | null 
     glade = undefined
   }
 
+  function getPlugin<T extends keyof UsePlugins>(pluginName: T) {
+    return glade?.getPlugin<UsePlugins[T]>(pluginName)
+  }
+
   function enablePlugin<T extends keyof UsePlugins>(pluginName: T) {
     return glade?.enablePlugin(pluginName)
   }
@@ -264,6 +268,7 @@ export default function useGlade(target: MaybeRefOrGetter<HTMLDivElement | null 
     isUndo,
     isRedo,
     isRightClickNode,
+    getPlugin,
     enablePlugin,
     disablePlugin,
     undo,

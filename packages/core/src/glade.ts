@@ -1,4 +1,4 @@
-import type { GladeOptions, GladePluginClass, GladePlugins } from './types'
+import type { GladeOptions, GladePlugin, GladePluginClass, GladePlugins } from './types'
 import { GladeCore } from './core'
 import { GladeHistory } from './history'
 import { GladeWorkspace } from './workspace'
@@ -46,6 +46,10 @@ export class Glade {
     }
 
     return this
+  }
+
+  getPlugin<T extends GladePlugin>(name: string) {
+    return this.plugins.get<T>(name)
   }
 
   enablePlugin(name: string) {
