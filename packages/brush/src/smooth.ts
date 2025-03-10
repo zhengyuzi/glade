@@ -3,8 +3,20 @@ import type { Shape, ShapeConfig } from 'konva/lib/Shape'
 import type { Line } from 'konva/lib/shapes/Line'
 import type { Vector2d } from 'konva/lib/types'
 
+// {
+//   sceneFunc(context: Context, shape: Line) {
+//     context.save()
+
+//     const points = shape.points()
+
+//     context.strokeShape(shape)
+//     context.restore()
+//   },
+// }
+
 export const smooth = {
   sceneFunc(context: Context, shape: Shape<ShapeConfig>) {
+    context.save()
     context.lineCap = 'round'
     context.lineJoin = 'round'
 
@@ -13,6 +25,7 @@ export const smooth = {
     drawSmoothLine(context, points)
 
     context.strokeShape(shape)
+    context.restore()
   },
 }
 

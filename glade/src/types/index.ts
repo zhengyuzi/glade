@@ -1,3 +1,5 @@
+import type { VNodeChild } from 'vue'
+
 export interface ITool {
   name: string
   iconName: string
@@ -13,4 +15,9 @@ export type IContextMenu = {
   style?: string
 } | {
   type: 'separator'
+}
+
+export interface IToggleGroup {
+  value: string
+  content: () => VNodeChild
 }

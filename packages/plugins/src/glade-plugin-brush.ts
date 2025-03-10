@@ -3,7 +3,29 @@ import { smooth } from '@glade/brush'
 
 export type GladeBrushType = 'default'
 
-export interface GladePluginBrushOptions {
+export interface GladePluginBrushConfig {
+  /**
+   * Brush stroke type
+   */
+  brushType?: GladeBrushType
+
+  /**
+   * Brush stroke color
+   */
+  strokeColor?: string
+
+  /**
+   * Brush stroke width
+   */
+  strokeWidth?: number
+
+  /**
+   * Brush stroke opacity
+   */
+  strokeOpacity?: number
+}
+
+export interface GladePluginBrushOptions extends GladePluginBrushConfig {
   enable?: boolean
 }
 
@@ -12,7 +34,13 @@ export class GladePluginBrush implements GladePlugin {
 
   isEnable = false
 
-  brushType: GladeBrushType = 'default'
+  private _brushType: GladeBrushType
+
+  private _strokeColor: string
+
+  private _strokeWidth: number
+
+  private _strokeOpacity: number
 
   private currentLine?: GladeLine
 
@@ -26,13 +54,42 @@ export class GladePluginBrush implements GladePlugin {
   }
 
   constructor(public workspace: GladeWorkspace, options: GladePluginBrushOptions = {}) {
-    const { enable = false } = options
+    const {
+      enable = false,
+      brushType = 'default',
+      strokeColor = '#000000',
+      strokeWidth = 8,
+      strokeOpacity = 1,
+    } = options
+
+    this._brushType = brushType
+    this._strokeColor = strokeColor
+    this._strokeWidth = strokeWidth
+    this._strokeOpacity = strokeOpacity
 
     workspace.nodes.forEach(this.handleBrush)
 
     enable && this.enable()
 
     this.workspace.on('node:load', this.handleNodeLoad)
+  }
+
+  config(_config?: GladePluginBrushConfig) {
+    if (_config) {
+      const { brushType, strokeColor, strokeWidth, strokeOpacity } = _config
+
+      brushType && (this._brushType = brushType)
+      strokeColor && (this._strokeColor = strokeColor)
+      strokeWidth && (this._strokeWidth = strokeWidth)
+      strokeOpacity && (this._strokeOpacity = strokeOpacity)
+    }
+
+    return {
+      brushType: this._brushType,
+      strokeWidth: this._strokeWidth,
+      strokeColor: this._strokeColor,
+      strokeOpacity: this._strokeOpacity,
+    }
   }
 
   enable() {
@@ -77,11 +134,12 @@ export class GladePluginBrush implements GladePlugin {
       return
 
     this.currentLine = this.workspace.createNode('GladeLine', {
-      brushType: this.brushType,
-      strokeWidth: 8,
-      stroke: '#000',
+      brushType: this._brushType,
+      strokeWidth: this._strokeWidth,
+      stroke: this._strokeColor,
+      opacity: this._strokeOpacity,
       points: [this.lastPosition.x, this.lastPosition.y],
-      sceneFunc: GladePluginBrush.brushes[this.brushType].sceneFunc,
+      sceneFunc: GladePluginBrush.brushes[this._brushType].sceneFunc,
     })
 
     this.workspace.addNode(this.currentLine)

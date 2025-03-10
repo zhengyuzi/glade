@@ -174,7 +174,7 @@ function switchDirection() {
       :class="isVertical ? 'top-0 left-[130%]' : 'left-0 top-[130%]'"
     >
       <h6 class="text-sm font-600 text-gray-600">
-        {{ t(currentTool) }} Options
+        {{ t(currentTool) }}
       </h6>
       <BrushTab v-if="currentTool === 'brush'" />
     </GladeButtonGroup>
