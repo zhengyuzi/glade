@@ -10,7 +10,7 @@ export class GladeText extends GladeNodeBase<Text> {
 
     super({
       id: config.id,
-      className: 'GladeRect',
+      className: 'GladeText',
       node,
     })
   }
