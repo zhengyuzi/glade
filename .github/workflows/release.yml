@@ -1,0 +1,53 @@
+name: Release
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - package.json
+
+jobs:
+  check-version:
+    runs-on: ubuntu-latest
+    outputs:
+      version_changed: ${{ steps.versions.outputs.version_changed }}
+      current_version: ${{ steps.versions.outputs.current_version }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth:
+
+      - name: Compare versions
+        id: versions
+        run: |
+          CURRENT_VERSION=$(jq -r .version package.json)
+          echo "Current version: $CURRENT_VERSION"
+
+          OLD_VERSION=$(git show HEAD^:package.json 2>/dev/null | jq -r .version || echo "")
+          echo "Old version: $OLD_VERSION"
+
+          if [ "$CURRENT_VERSION" != "$OLD_VERSION" ]; then
+            echo "version_changed=true" >> $GITHUB_OUTPUT
+          else
+            echo "version_changed=false" >> $GITHUB_OUTPUT
+          fi
+
+          echo "current_version=$CURRENT_VERSION" >> $GITHUB_OUTPUT
+
+  create-release:
+    needs: check-version
+    if: ${{ needs.check-version.outputs.version_changed == 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create GitHub Release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}
+        with:
+          tag_name: v${{ needs.check-version.outputs.current_version }}
+          release_name: Glade v${{ needs.check-version.outputs.current_version }}
+          body: Auto-generated release for version ${{ needs.check-version.outputs.current_version }}
+          draft: false
+          prerelease: false
