@@ -1,0 +1,85 @@
+name: Release
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - package.json
+
+jobs:
+  check-version:
+    runs-on: ubuntu-latest
+    outputs:
+      version_changed: ${{ steps.versions.outputs.version_changed }}
+      current_version: ${{ steps.versions.outputs.current_version }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth:
+
+      - name: Compare versions
+        id: versions
+        run: |
+          CURRENT_VERSION=$(jq -r .version package.json)
+          echo "Current version: $CURRENT_VERSION"
+
+          OLD_VERSION=$(git show HEAD^:package.json 2>/dev/null | jq -r .version || echo "")
+          echo "Old version: $OLD_VERSION"
+
+          if [ "$CURRENT_VERSION" != "$OLD_VERSION" ]; then
+            echo "version_changed=true" >> $GITHUB_OUTPUT
+          else
+            echo "version_changed=false" >> $GITHUB_OUTPUT
+          fi
+
+          echo "current_version=$CURRENT_VERSION" >> $GITHUB_OUTPUT
+
+  create-release:
+    needs: check-version
+    if: ${{ needs.check-version.outputs.version_changed == 'true' }}
+    permissions:
+      id-token: write
+      contents: write
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create GitHub Release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}
+        with:
+          tag_name: v${{ needs.check-version.outputs.current_version }}
+          release_name: Glade v${{ needs.check-version.outputs.current_version }}
+          body: Auto-generated release for version ${{ needs.check-version.outputs.current_version }}
+          draft: false
+          prerelease: false
+
+      # - uses: actions/checkout@v4
+      #   with:
+      #     fetch-depth: 0
+
+      # - name: Install pnpm
+      #   uses: pnpm/action-setup@v4
+
+      # - name: Set node
+      #   uses: actions/setup-node@v4
+      #   with:
+      #     node-version: lts/*
+      #     cache: pnpm
+      #     registry-url: 'https://registry.npmjs.org'
+
+      # - name: Install Dependencies
+      #   run: pnpm i
+
+      # - name: Stub
+      #   run: pnpm run stub
+
+      # - name: Build
+      #   run: pnpm run build:lib
+
+      # - name: Publish to npm
+      #   run: pnpm -r publish --access public --no-git-checks
+      #   env:
+      #     NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      #     NPM_CONFIG_PROVENANCE: true

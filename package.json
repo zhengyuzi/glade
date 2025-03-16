@@ -1,0 +1,30 @@
+{
+  "name": "glade",
+  "type": "module",
+  "version": "1.0.0-beta.1",
+  "private": true,
+  "packageManager": "pnpm@9.10.0",
+  "description": "Virtual whiteboard",
+  "author": "yu <381740310@qq.com> (https://github.com/zhengyuzi)",
+  "license": "MIT",
+  "homepage": "https://github.com/zhengyuzi/glade",
+  "scripts": {
+    "dev": "pnpm -C glade run dev",
+    "preview": "pnpm -C glade run preview",
+    "build": "pnpm -C glade run build",
+    "build:lib": "pnpm -r --filter=./packages/* run build",
+    "stub": "rimraf packages/*/dist --glob && pnpm -r --filter=./packages/* run stub",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "release": "bumpp -r"
+  },
+  "devDependencies": {
+    "@antfu/eslint-config": "^3.12.0",
+    "bumpp": "^9.9.1",
+    "eslint": "^9.21.0",
+    "rimraf": "^6.0.1",
+    "stubb": "^2.0.1",
+    "typescript": "^5.7.2",
+    "unbuild": "^3.0.1"
+  }
+}

@@ -1,0 +1,50 @@
+{
+  "name": "@glade-app/core",
+  "type": "module",
+  "version": "1.0.0-beta.1",
+  "description": "glade core",
+  "author": "yu <381740310@qq.com> (https://github.com/zhengyuzi)",
+  "license": "MIT",
+  "homepage": "https://github.com/zhengyuzi/glade/tree/main/packages/core",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/zhengyuzi/glade"
+  },
+  "bugs": {
+    "url": "https://github.com/zhengyuzi/glade/issues"
+  },
+  "keywords": [
+    "glade",
+    "konva",
+    "whiteboard"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "main": "dist/index.cjs",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "unbuild",
+    "stub": "stubb"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
+  "peerDependencies": {
+    "konva": ">=9.3.18"
+  },
+  "dependencies": {
+    "eventemitter3": "^5.0.1",
+    "konva": "9.3.18",
+    "nanoid": "^5.0.9"
+  }
+}

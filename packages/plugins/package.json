@@ -1,0 +1,49 @@
+{
+  "name": "@glade-app/plugins",
+  "type": "module",
+  "version": "1.0.0-beta.1",
+  "description": "glade plugins",
+  "author": "yu <381740310@qq.com> (https://github.com/zhengyuzi)",
+  "license": "MIT",
+  "homepage": "https://github.com/zhengyuzi/glade/tree/main/packages/plugins",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/zhengyuzi/glade"
+  },
+  "bugs": {
+    "url": "https://github.com/zhengyuzi/glade/issues"
+  },
+  "keywords": [
+    "glade",
+    "konva",
+    "plugins",
+    "whiteboard"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "main": "dist/index.cjs",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "unbuild",
+    "stub": "stubb"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
+  "dependencies": {
+    "@glade-app/brushes": "workspace:*",
+    "@glade-app/core": "workspace:*",
+    "es-toolkit": "^1.30.1",
+    "localforage": "^1.10.0"
+  }
+}
