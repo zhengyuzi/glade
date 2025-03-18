@@ -17,3 +17,8 @@ export type IContextMenu = {
 } | {
   type: 'separator'
 }
+
+export interface ISelect {
+  label: string
+  value: string
+}

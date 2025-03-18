@@ -12,6 +12,7 @@ declare module 'vue' {
     GladeColorPicker: typeof import('./components/GladeColorPicker/index.vue')['default']
     GladeContextMenu: typeof import('./components/GladeContextMenu/index.vue')['default']
     GladePopover: typeof import('./components/GladePopover/index.vue')['default']
+    GladeSelect: typeof import('./components/GladeSelect/index.vue')['default']
     GladeSlider: typeof import('./components/GladeSlider/index.vue')['default']
   }
 }
