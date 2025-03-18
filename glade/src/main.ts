@@ -4,7 +4,7 @@ import { createI18n } from 'vue-i18n'
 import App from './App.vue'
 import { GLADE_CONFIG } from './utils/storage'
 import 'virtual:uno.css'
-import '@unocss/reset/tailwind-compat.css'
+import '@unocss/reset/tailwind.css'
 
 /**
  * https://cn.vitejs.dev/guide/build#load-error-handling
