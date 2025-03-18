@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type useGlade from '@/hooks/useGlade'
+import type { ISelect } from '@/types'
 import type { GladeBrushType, GladePluginBrushConfig } from '@glade-app/plugins'
 import { type GladeHookEvent, GladeLine, type GladeNode } from '@glade-app/core'
 import { useDebounceFn } from '@vueuse/core'
@@ -18,10 +19,10 @@ const config = reactive<Required<GladePluginBrushConfig>>({
   brushType: 'default',
 })
 
-const brushTypes: { value: GladeBrushType, content: string }[] = [
+const brushTypes: ISelect[] = [
   {
+    label: t('default'),
     value: 'default',
-    content: 'Default',
   },
 ]
 
@@ -84,45 +85,42 @@ function updateBrushType(type: GladeBrushType) {
 </script>
 
 <template>
-  <div class="text-xs text-gray-600 space-y-3 select-none">
+  <div class="text-gray-600 space-y-3 select-none">
     <h6 class="text-sm font-bold">
       {{ t('brush') }}
     </h6>
-    <div class="space-y-1">
-      <span>{{ t('color') }}</span>
-      <GladeColorPicker v-model:value="config.stroke" :size="32" @update:value="updateColor" />
+    <div class="h-9 flex space-x-2 items-center py-1 text-sm">
+      <GladeSelect
+        :value="config.brushType"
+        :options="brushTypes"
+        :title="t('brush_type')"
+        :placeholder="t('brush_type')"
+        @update:value="updateBrushType"
+      />
     </div>
-    <div class="space-y-1">
-      <span>{{ t('brush_type') }}</span>
-      <div class="flex items-center space-x-2 py-1">
-        <button
-          v-for="item in brushTypes"
-          :key="item.value"
-          class="p-2 rounded focus:outline-none active:(scale-90)"
-          :class="config.brushType === item.value ? 'bg-gray-400 text-gray-50' : 'bg-gray-100'"
-          @click="() => updateBrushType(item.value)"
-        >
-          {{ item.content }}
-        </button>
+    <GladeColorPicker :value="config.stroke" :size="32" @update:value="updateColor">
+      <div class="h-9 flex space-x-2 items-center border px-2 py-1 rounded bg-gray-50">
+        <div class="rounded w-5 h-5 border" :style="`background-color: ${config.stroke}`" />
+        <span class="w-17 text-left text-sm">{{ config.stroke }}</span>
       </div>
-    </div>
-    <div class="space-y-1">
-      <span>{{ t('stroke_width') }} {{ config.strokeWidth }}</span>
+    </GladeColorPicker>
+    <div class="h-9 flex space-x-2 items-center border px-2 py-1 rounded bg-gray-50 text-sm">
+      <span>{{ t('stroke_width') }}</span>
       <GladeSlider
         :min="2"
         :max="30"
-        :model-value="[config.strokeWidth]"
-        @update:model-value="updateWidth"
+        :value="[config.strokeWidth]"
+        @update:value="updateWidth"
       />
     </div>
-    <div class="space-y-1">
-      <span>{{ t('opacity') }} {{ config.opacity * 100 }}</span>
+    <div class="h-9 flex space-x-2 items-center border px-2 py-1 rounded bg-gray-50 text-sm">
+      <span>{{ t('opacity') }}</span>
       <GladeSlider
         :min="0.1"
         :max="1"
         :step="0.1"
-        :model-value="[config.opacity]"
-        @update:model-value="updateOpacity"
+        :value="[config.opacity]"
+        @update:value="updateOpacity"
       />
     </div>
   </div>

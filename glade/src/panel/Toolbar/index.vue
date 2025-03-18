@@ -96,6 +96,9 @@ onMounted(() => {
       changeTool('selection')
     }
   }, { keyup: true })
+
+  // Reset tool to selection when all selected
+  hotkey('Ctrl+A', () => resetTool())
 })
 
 onSelectImageCancel(() => resetTool())
@@ -159,7 +162,7 @@ function onDragEnd(position: Position) {
     :style="['position:fixed;z-index:999;touch-action:none;', style]"
   >
     <GladeButtonGroup
-      class="bg-gray-200 text-2xl p-1.5"
+      class="text-2xl p-1.5"
       :class="isVertical ? 'flex-col space-y-2' : 'space-x-2'"
     >
       <!-- Draggable handle -->
@@ -178,22 +181,28 @@ function onDragEnd(position: Position) {
             :side="isVertical ? 'right' : 'bottom'"
           >
             <GladeButton
-              class="relative border-2 border-gray-400 bg-gray-300 shadow-md rounded-md p-1 active:(scale-90)"
-              :class="currentTool === tool.name ? '!bg-gray-500 !text-gray-100 border-gray-50' : ''"
+              class="relative border-2 shadow-md rounded-md p-1 active:(scale-90)"
+              :class="currentTool === tool.name ? 'bg-gray-500 !text-gray-100 border-gray-50' : 'border-gray-400 bg-gray-300'"
               @click="() => selectTool(tool.name)"
             >
               <i :class="tool.iconName" />
             </GladeButton>
             <template #content>
-              <component :is="tool.tab" />
+              <GladeButton
+                class="rounded-full h-[20px] w-[20px] inline-flex items-center justify-center absolute top-4 right-4 active:(scale-90)"
+                @click="popoverOpen = false"
+              >
+                <i class="i-ic-round-close" />
+              </GladeButton>
+              <component :is="tool.tab" class="p-4" />
             </template>
           </GladePopover>
         </template>
         <template v-else>
           <GladeButton
             :key="tool.name"
-            class="relative border-2 border-gray-400 bg-gray-300 shadow-md rounded-md p-1 active:(scale-90)"
-            :class="currentTool === tool.name ? '!bg-gray-500 !text-gray-100 border-gray-50' : ''"
+            class="relative border-2 shadow-md rounded-md p-1 active:(scale-90)"
+            :class="currentTool === tool.name ? 'bg-gray-500 !text-gray-100 border-gray-50' : 'border-gray-400 bg-gray-300'"
             @click="() => selectTool(tool.name)"
           >
             <i :class="tool.iconName" />

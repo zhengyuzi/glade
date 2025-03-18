@@ -70,18 +70,20 @@ function updateOpacity(value: number[]) {
     <h6 class="text-sm font-bold">
       {{ t('text') }}
     </h6>
-    <div class="space-y-1">
-      <span>{{ t('color') }}</span>
-      <GladeColorPicker v-model:value="config.fill" :size="32" @update:value="updateColor" />
-    </div>
-    <div class="space-y-1">
-      <span>{{ t('opacity') }} {{ config.opacity * 100 }}</span>
+    <GladeColorPicker :value="config.fill" :size="32" @update:value="updateColor">
+      <div class="h-9 flex space-x-2 items-center border px-2 py-1 rounded bg-gray-50">
+        <div class="rounded w-5 h-5 border" :style="`background-color: ${config.fill}`" />
+        <span class="w-17 text-left text-sm">{{ config.fill }}</span>
+      </div>
+    </GladeColorPicker>
+    <div class="h-9 flex space-x-2 items-center border px-2 py-1 rounded bg-gray-50 text-sm">
+      <span>{{ t('opacity') }}</span>
       <GladeSlider
         :min="0.1"
         :max="1"
         :step="0.1"
-        :model-value="[config.opacity]"
-        @update:model-value="updateOpacity"
+        :value="[config.opacity]"
+        @update:value="updateOpacity"
       />
     </div>
   </div>
