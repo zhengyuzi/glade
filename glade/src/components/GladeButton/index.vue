@@ -11,7 +11,7 @@ withDefaults(defineProps<IProps>(), {
 <template>
   <button
     :disabled="disabled"
-    class="inline-flex items-center justify-center bg-gray-200 text-gray-500 focus:outline-none"
+    class="inline-flex items-center justify-center text-gray-500 focus:outline-none"
     :class="disabled ? 'text-opacity-30 pointer-events-none' : 'hover:(text-gray-700)'"
   >
     <slot />
