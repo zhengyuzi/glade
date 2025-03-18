@@ -9,6 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@cyhnkckali/vue3-color-picker": "^2.0.8",
     "@glade-app/core": "workspace:*",
     "@glade-app/plugins": "workspace:*",
     "@intlify/unplugin-vue-i18n": "^6.0.3",
@@ -18,8 +19,7 @@
     "hotkeys-js": "^3.13.9",
     "reka-ui": "^2.0.0",
     "vue": "^3.5.13",
-    "vue-i18n": "^11.1.0",
-    "vue-pick-colors": "^1.8.0"
+    "vue-i18n": "^11.1.0"
   },
   "devDependencies": {
     "@iconify/json": "^2.2.285",
