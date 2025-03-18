@@ -5,7 +5,7 @@ on:
     branches:
       - main
     paths:
-      - package.json
+      - glade/package.json
 
 jobs:
   check-version:
@@ -17,15 +17,15 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          fetch-depth:
+          fetch-depth: 2 # 需要至少 2 个提交历史用于比较
 
       - name: Compare versions
         id: versions
         run: |
-          CURRENT_VERSION=$(jq -r .version package.json)
+          CURRENT_VERSION=$(jq -r .version glade/package.json)
           echo "Current version: $CURRENT_VERSION"
 
-          OLD_VERSION=$(git show HEAD^:package.json 2>/dev/null | jq -r .version || echo "")
+          OLD_VERSION=$(git show HEAD^:glade/package.json 2>/dev/null | jq -r .version || echo "")
           echo "Old version: $OLD_VERSION"
 
           if [ "$CURRENT_VERSION" != "$OLD_VERSION" ]; then
@@ -54,32 +54,3 @@ jobs:
           body: Auto-generated release for version ${{ needs.check-version.outputs.current_version }}
           draft: false
           prerelease: false
-
-      # - uses: actions/checkout@v4
-      #   with:
-      #     fetch-depth: 0
-
-      # - name: Install pnpm
-      #   uses: pnpm/action-setup@v4
-
-      # - name: Set node
-      #   uses: actions/setup-node@v4
-      #   with:
-      #     node-version: lts/*
-      #     cache: pnpm
-      #     registry-url: 'https://registry.npmjs.org'
-
-      # - name: Install Dependencies
-      #   run: pnpm i
-
-      # - name: Stub
-      #   run: pnpm run stub
-
-      # - name: Build
-      #   run: pnpm run build:lib
-
-      # - name: Publish to npm
-      #   run: pnpm -r publish --access public --no-git-checks
-      #   env:
-      #     NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-      #     NPM_CONFIG_PROVENANCE: true

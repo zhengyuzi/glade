@@ -5,7 +5,7 @@ on:
     branches:
       - main
     paths:
-      - package.json
+      - glade/package.json
 
 jobs:
   check-version:
@@ -21,8 +21,10 @@ jobs:
       - name: Compare versions
         id: versions
         run: |
-          CURRENT_VERSION=$(jq -r .version package.json)
-          OLD_VERSION=$(git show HEAD^:package.json 2>/dev/null | jq -r .version || echo "")
+          CURRENT_VERSION=$(jq -r .version glade/package.json)
+
+          OLD_VERSION=$(git show HEAD^:glade/package.json 2>/dev/null | jq -r .version || echo "")
+
           if [ "$CURRENT_VERSION" != "$OLD_VERSION" ]; then
             echo "version_changed=true" >> $GITHUB_OUTPUT
           else
@@ -35,7 +37,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
         with:
           ref: main
 
