@@ -1,7 +1,6 @@
 {
   "name": "glade",
   "type": "module",
-  "version": "1.0.0-beta.1",
   "private": true,
   "packageManager": "pnpm@9.10.0",
   "description": "Virtual whiteboard",
@@ -15,8 +14,7 @@
     "build:lib": "pnpm -r --filter=./packages/* run build",
     "stub": "rimraf packages/*/dist --glob && pnpm -r --filter=./packages/* run stub",
     "lint": "eslint .",
-    "lint:fix": "eslint . --fix",
-    "release": "bumpp -r"
+    "lint:fix": "eslint . --fix"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^3.12.0",
