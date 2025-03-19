@@ -1,5 +1,6 @@
 import type Konva from 'konva'
-import type { GladeBrush } from './types'
+import type { GladeBrush } from '../types'
+import { toPoints } from '../utils'
 
 export const smooth: GladeBrush = {
   sceneFunc(context, shape) {
@@ -18,7 +19,7 @@ export const smooth: GladeBrush = {
 
 // Draw smooth line segments
 function drawSmoothLine(ctx: Konva.Context, segments: number[]) {
-  const points = convertArrayToPoints(segments)
+  const points = toPoints(segments)
 
   ctx.beginPath()
 
@@ -97,12 +98,4 @@ function catmullRom(p0: Konva.Vector2d, p1: Konva.Vector2d, p2: Konva.Vector2d, 
       + (2 * p0.y - 5 * p1.y + 4 * p2.y - p3.y) * t2
       + (-p0.y + 3 * p1.y - 3 * p2.y + p3.y) * t3),
   }
-}
-
-function convertArrayToPoints(arr: number[]) {
-  const points = []
-  for (let i = 0; i < arr.length; i += 2) {
-    points.push({ x: arr[i], y: arr[i + 1] })
-  }
-  return points
 }

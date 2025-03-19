@@ -103,7 +103,7 @@ importers:
         specifier: ^2.2.4
         version: 2.2.4(typescript@5.7.3)
 
-  packages/brushes:
+  packages/brush:
     dependencies:
       konva:
         specifier: 9.3.18
@@ -123,9 +123,9 @@ importers:
 
   packages/plugins:
     dependencies:
-      '@glade-app/brushes':
+      '@glade-app/brush':
         specifier: workspace:*
-        version: link:../brushes
+        version: link:../brush
       '@glade-app/core':
         specifier: workspace:*
         version: link:../core

@@ -1,8 +1,8 @@
 {
-  "name": "@glade-app/brushes",
+  "name": "@glade-app/brush",
   "type": "module",
   "version": "1.0.0-beta.1",
-  "description": "glade brushes",
+  "description": "glade brush",
   "author": "yu <381740310@qq.com> (https://github.com/zhengyuzi)",
   "license": "MIT",
   "homepage": "https://github.com/zhengyuzi/glade/tree/main/packages/brushes",

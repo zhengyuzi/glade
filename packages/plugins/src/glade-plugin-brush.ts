@@ -1,5 +1,5 @@
 import type { GladeHookEvent, GladeLine, GladeNode, GladePlugin, GladeWorkspace } from '@glade-app/core'
-import { smooth } from '@glade-app/brushes'
+import { smooth } from '@glade-app/brush'
 
 export type GladeBrushType = 'default'
 
