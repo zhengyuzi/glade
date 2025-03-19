@@ -7,9 +7,8 @@ import { fileToBase64 } from '@/utils'
 import { hotkey } from '@/utils/hotkeys'
 import { GLADE_CONFIG } from '@/utils/storage'
 import { useDraggable, useElementSize, useFileDialog } from '@vueuse/core'
-
-const BrushTab = defineAsyncComponent(() => import('../Tooltab/Brush/index.vue'))
-const TextTab = defineAsyncComponent(() => import('../Tooltab/Text/index.vue'))
+import BrushTab from '../Tooltab/Brush/index.vue'
+import TextTab from '../Tooltab/Text/index.vue'
 
 const draggableEl = useTemplateRef<HTMLElement>('draggableEl')
 const handleEl = useTemplateRef<HTMLElement>('handleEl')
@@ -159,7 +158,7 @@ function onDragEnd(position: Position) {
 <template>
   <div
     ref="draggableEl"
-    :style="['position:fixed;z-index:999;touch-action:none;', style]"
+    :style="style"
   >
     <GladeButtonGroup
       class="text-2xl p-1.5"

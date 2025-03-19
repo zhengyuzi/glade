@@ -1,9 +1,8 @@
 <script setup lang="ts">
 import type useGlade from '@/hooks/useGlade'
 import { promiseTimeout } from '@vueuse/core'
-
-const BrushTab = defineAsyncComponent(() => import('./Brush/index.vue'))
-const TextTab = defineAsyncComponent(() => import('./Text/index.vue'))
+import BrushTab from './Brush/index.vue'
+import TextTab from './Text/index.vue'
 
 const tabs = {
   brush: BrushTab,
