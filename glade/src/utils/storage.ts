@@ -40,7 +40,10 @@ export const GLADE_CONFIG = useStorage<GladeConfig>(
   undefined,
   {
     serializer: StorageSerializers.object,
-    mergeDefaults: true,
+    mergeDefaults(storageValue, defaults) {
+      storageValue.version = defaults.version
+      return { ...defaults, ...storageValue }
+    },
   },
 )
 
