@@ -50,13 +50,17 @@ function handleHistory(e: GladeHookEvent) {
 
 function updateConfig(nodes: GladeNode[]) {
   const keys = Object.keys(config) as Array<keyof GladePluginBrushConfig>
+  const lines = nodes.filter(node => node instanceof GladeLine)
 
-  nodes
-    .filter(node => node instanceof GladeLine)
-    .forEach((node) => {
-      const attrs = node.getAttrs()
-      keys.forEach(key => attrs[key] && (config[key] = attrs[key] as never))
-    })
+  // Tool panel defaults when multiple nodes of the same type are selected
+  if (lines.length > 1) {
+    return
+  }
+
+  lines.forEach((node) => {
+    const attrs = node.getAttrs()
+    keys.forEach(key => attrs[key] && (config[key] = attrs[key] as never))
+  })
 }
 
 function updateWidth(value: number[]) {

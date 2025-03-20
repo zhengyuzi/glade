@@ -43,13 +43,17 @@ function handleHistory(e: GladeHookEvent) {
 
 function updateConfig(nodes: GladeNode[]) {
   const keys = Object.keys(config) as Array<keyof GladePluginTextConfig>
+  const texts = nodes.filter(node => node instanceof GladeText)
 
-  nodes
-    .filter(node => node instanceof GladeText)
-    .forEach((node) => {
-      const attrs = node.getAttrs()
-      keys.forEach(key => attrs[key] && (config[key] = attrs[key] as never))
-    })
+  // Tool panel defaults when multiple nodes of the same type are selected
+  if (texts.length > 1) {
+    return
+  }
+
+  texts.forEach((node) => {
+    const attrs = node.getAttrs()
+    keys.forEach(key => attrs[key] && (config[key] = attrs[key] as never))
+  })
 }
 
 function updateColor(value: string) {
