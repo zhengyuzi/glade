@@ -6,6 +6,8 @@ import { GladeNodeBase } from './node'
 export interface GladeGroupConfig extends ContainerConfig {}
 
 export class GladeGroup extends GladeNodeBase<Group> {
+  private _nodes: GladeNode[] = []
+
   constructor(config: GladeGroupConfig = {}) {
     const node = new Group(config)
 
@@ -17,11 +19,12 @@ export class GladeGroup extends GladeNodeBase<Group> {
   }
 
   get children() {
-    return this._node.children
+    return this._nodes
   }
 
   add(...children: GladeNode[]) {
     this._node.add(...children.map(item => item._node))
+    this._nodes.push(...children)
     return this
   }
 
