@@ -34,7 +34,7 @@ export interface GladeNodeObj {
     [key: string]: any
   }
   className: keyof GladeNodeConfig
-  children?: Array<any>
+  children?: GladeNodeObj[]
   isSelect?: boolean
   zIndex: number
 }
