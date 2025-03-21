@@ -198,17 +198,29 @@ export class GladeWorkspace extends EventEmitter<GladeHooks> {
    * @return GladeNode | null
    */
   getIntersection(pos: Konva.Vector2d) {
-    const target = this.view.canvas.getIntersection(pos) as GladeNode | null
+    const target = this.view.canvas.getIntersection(pos)
 
     if (target) {
-      return [target]
+      let id = target.id()
+      let parent = target.parent
+
+      while (parent?.className === 'GladeGroup') {
+        id = parent.id()
+        parent = parent.parent
+      }
+
+      const node = this.getNode(id)
+
+      return node ? [node] : []
     }
 
-    const stageTarget = this.view.stage.getIntersection(pos) as GladeNode | null
+    const stageTarget = this.view.stage.getIntersection(pos)
 
-    if (stageTarget) {
+    if (stageTarget && this.view.transformer.isTransformerNode(stageTarget)) {
       return this.selectedNodes
     }
+
+    return null
   }
 
   addEventListener(

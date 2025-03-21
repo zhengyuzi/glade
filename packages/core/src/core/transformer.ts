@@ -1,5 +1,5 @@
 import type { Node, NodeConfig } from 'konva/lib/Node'
-import type { GladeNode } from '../types'
+import type { GladeNode, GladeNodeBaseType } from '../types'
 import Konva from 'konva'
 
 export class GladeTransformer {
@@ -23,8 +23,8 @@ export class GladeTransformer {
     return this._nodes
   }
 
-  isTransformerNode(node: GladeNode) {
-    return node._node === this._node || node._node?.parent === this._node || node._node === this._node.mask
+  isTransformerNode(node: GladeNodeBaseType) {
+    return node === this._node || node?.parent === this._node || node === this._node.mask
   }
 }
 
