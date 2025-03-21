@@ -23,5 +23,7 @@
   "stroke_width": "Stroke width",
   "brush_type": "Brush type",
   "opacity": "Opacticy",
-  "default": "Default"
+  "default": "Default",
+  "group_selection": "Group selection",
+  "ungroup_selection": "Ungroup selection"
 }
