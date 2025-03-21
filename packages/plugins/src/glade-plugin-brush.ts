@@ -95,11 +95,15 @@ export class GladePluginBrush implements GladePlugin {
     this.disable()
   }
 
-  private handleBrush(node: GladeNode) {
-    if (node.className === 'GladeLine') {
-      const type = node.getAttr('brushType') as keyof typeof brushes
-      node.setAttrs({ sceneFunc: brushes[type || 'default'].sceneFunc })
-    }
+  private handleBrush = (node: GladeNode) => {
+    const flatNodes = this.workspace.getFlattenedNodes([node])
+
+    flatNodes.forEach((node) => {
+      if (node.className === 'GladeLine') {
+        const type = node.getAttr('brushType') as keyof typeof brushes
+        node.setAttrs({ sceneFunc: brushes[type || 'default'].sceneFunc })
+      }
+    })
   }
 
   private handleNodeLoad = (e: GladeHookEvent) => e.nodes.forEach(this.handleBrush)
