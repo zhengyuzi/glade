@@ -27,7 +27,7 @@ const brushTypes: ISelect[] = [
 ]
 
 const updateNode = useDebounceFn((config: Record<string, any>) => {
-  const selectedNodes = workspace.value?.selectedNodes || []
+  const selectedNodes = workspace.value?.getFlattenedNodes(workspace.value?.selectedNodes || []) || []
   const nodes = selectedNodes.filter(node => node instanceof GladeLine)
   workspace.value?.updateNode(nodes, config)
 }, 100)
@@ -48,14 +48,11 @@ function handleHistory(e: GladeHookEvent) {
   updateConfig(e.nodes)
 }
 
-function updateConfig(nodes: GladeNode[]) {
+function updateConfig(_nodes: GladeNode[]) {
+  const nodes = workspace.value?.getFlattenedNodes(_nodes) || []
+
   const keys = Object.keys(config) as Array<keyof GladePluginBrushConfig>
   const lines = nodes.filter(node => node instanceof GladeLine)
-
-  // Tool panel defaults when multiple nodes of the same type are selected
-  if (lines.length > 1) {
-    return
-  }
 
   lines.forEach((node) => {
     const attrs = node.getAttrs()

@@ -20,7 +20,7 @@ const config = reactive<Required<GladePluginTextConfig>>({
 })
 
 const updateNode = useDebounceFn((config: Record<string, any>) => {
-  const selectedNodes = workspace.value?.selectedNodes || []
+  const selectedNodes = workspace.value?.getFlattenedNodes(workspace.value?.selectedNodes || []) || []
   const nodes = selectedNodes.filter(node => node instanceof GladeText)
   workspace.value?.updateNode(nodes, config)
 }, 100)
@@ -41,14 +41,11 @@ function handleHistory(e: GladeHookEvent) {
   updateConfig(e.nodes)
 }
 
-function updateConfig(nodes: GladeNode[]) {
+function updateConfig(_nodes: GladeNode[]) {
+  const nodes = workspace.value?.getFlattenedNodes(_nodes) || []
+
   const keys = Object.keys(config) as Array<keyof GladePluginTextConfig>
   const texts = nodes.filter(node => node instanceof GladeText)
-
-  // Tool panel defaults when multiple nodes of the same type are selected
-  if (texts.length > 1) {
-    return
-  }
 
   texts.forEach((node) => {
     const attrs = node.getAttrs()

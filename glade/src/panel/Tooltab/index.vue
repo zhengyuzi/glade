@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import type useGlade from '@/hooks/useGlade'
+import type { GladeNode } from '@glade-app/core'
+import { GladeGroup } from '@glade-app/core'
 import { promiseTimeout } from '@vueuse/core'
 import BrushTab from './Brush/index.vue'
 import TextTab from './Text/index.vue'
@@ -50,7 +52,14 @@ async function handleNodeSelect() {
 
   await promiseTimeout(0)
 
-  for (const node of selectedNodes) {
+  selectedNodes.forEach(node => addTabType(node))
+}
+
+function addTabType(node: GladeNode) {
+  if (node instanceof GladeGroup) {
+    node.children.forEach(n => addTabType(n))
+  }
+  else {
     const type = classNames[node.className as keyof typeof classNames]
     type && showTabTools.add(type)
   }
