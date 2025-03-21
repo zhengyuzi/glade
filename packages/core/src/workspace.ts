@@ -367,25 +367,39 @@ export class GladeWorkspace extends EventEmitter<GladeHooks> {
   }
 
   loadNode(_nodes: GladeNodeObj[]) {
-    const nodes = _nodes.map((item) => {
-      const id = item.attrs.id
-      const isExist = !!this.getNode(id)
+    const selectedNodes: GladeNode[] = []
 
-      const n = this.createNode(item.className, {
-        ...item.attrs,
-        id: !id || isExist ? nanoid() : id,
+    const processNodes = (nodes: GladeNodeObj[]): GladeNode[] => {
+      return nodes.map((item) => {
+        const id = item.attrs.id
+        const isExist = !!this.getNode(id)
+
+        const n = this.createNode(item.className, {
+          ...item.attrs,
+          id: !id || isExist ? nanoid() : id,
+        })
+
+        if (n instanceof GladeGroup && item.children) {
+          const children = processNodes(item.children)
+          n.add(...children)
+        }
+        else if (n instanceof GladeImage && n.dataURL) {
+          n.setAttrs({ dataURL: undefined })
+        }
+
+        if (item.isSelect && !isExist) {
+          selectedNodes.push(n)
+        }
+
+        return n
       })
+    }
 
-      if (n instanceof GladeImage && n.dataURL) {
-        n.setAttrs({ dataURL: undefined })
-      }
+    const nodes = processNodes(_nodes)
 
-      if (item.isSelect && !isExist) {
-        this.view.transformer.nodes([...this.selectedNodes, n])
-      }
-
-      return n
-    })
+    if (selectedNodes.length > 0) {
+      this.view.transformer.nodes([...this.selectedNodes, ...selectedNodes])
+    }
 
     this.callHook('node:load', nodes)
 
