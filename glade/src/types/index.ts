@@ -14,8 +14,10 @@ export type IContextMenu = {
   hotkey: string
   fn: () => void
   style?: string
+  show?: () => boolean
 } | {
   type: 'separator'
+  show?: () => boolean
 }
 
 export interface ISelect {
