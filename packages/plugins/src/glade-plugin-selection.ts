@@ -87,16 +87,14 @@ export class GladePluginSelection implements GladePlugin {
   }
 
   private handlePointerdownNode = (e: any) => {
-    this.workspace.selectNode(e.target)
+    const nodes = this.workspace.getIntersection(e.evt)
+    this.workspace.selectNode(nodes || [])
   }
 
   private handlePointerdown = (e: any) => {
     const pointer = this.workspace.fixedPointerPosition
 
-    if (!pointer)
-      return
-
-    if (this.workspace.getIntersection(pointer)?.length)
+    if (!pointer || this.workspace.getIntersection(pointer)?.length)
       return
 
     this.startPosition.x = pointer.x
@@ -172,7 +170,7 @@ export class GladePluginSelection implements GladePlugin {
       return isRectAContainsRectB(rect, node.getClientRect())
     })
 
-    this.workspace.selectNode(selectedNodes)
+    selectedNodes.length && this.workspace.selectNode(selectedNodes)
   }, 80)
 }
 
