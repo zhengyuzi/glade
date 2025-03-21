@@ -24,7 +24,7 @@ export class GladeTransformer {
   }
 
   isTransformerNode(node: GladeNodeBaseType) {
-    return node === this._node || node?.parent === this._node || node === this._node.mask
+    return node.id() === this._node.id() || node?.parent?.id() === this._node.id() || node.id() === this._node.mask.id()
   }
 }
 
