@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import type useGlade from '@/hooks/useGlade'
 import type { IContextMenu } from '@/types'
-import type { GladeNodeObj } from '@glade-app/core'
 import { fileToBase64 } from '@/utils'
 import { hotkey, unhotkey } from '@/utils/hotkeys'
 import { GLADE_CONFIG } from '@/utils/storage'
+import { GladeGroup, type GladeNodeObj } from '@glade-app/core'
 import { useI18n } from 'vue-i18n'
 
 const { workspace, createImage, disablePlugin, enablePlugin } = inject<ReturnType<typeof useGlade>>('glade')!
@@ -14,7 +14,7 @@ const { t } = useI18n()
 // Whether the node is clicked when right clicking
 const isRightClickNode = ref(false)
 
-const menu = computed<IContextMenu[]>(() => [
+const menu = reactive<IContextMenu[]>([
   {
     type: 'item',
     text: t('paste'),
@@ -38,7 +38,7 @@ const menu = computed<IContextMenu[]>(() => [
   },
 ])
 
-const nodeMenu = computed<IContextMenu[]>(() => [
+const nodeMenu = reactive<IContextMenu[]>([
   {
     type: 'item',
     text: t('cut'),
@@ -53,6 +53,28 @@ const nodeMenu = computed<IContextMenu[]>(() => [
   },
   {
     type: 'separator',
+  },
+  {
+    type: 'item',
+    text: t('group_selection'),
+    hotkey: 'Ctrl+G',
+    fn: () => groupSelection(),
+    show: () => isGroupSelection(),
+  },
+  {
+    type: 'separator',
+    show: () => isGroupSelection(),
+  },
+  {
+    type: 'item',
+    text: t('ungroup_selection'),
+    hotkey: 'Ctrl+G',
+    fn: () => ungroupSelection(),
+    show: () => isUngroupSelection(),
+  },
+  {
+    type: 'separator',
+    show: () => isUngroupSelection(),
   },
   {
     type: 'item',
@@ -236,6 +258,31 @@ function remove() {
   const selectedNode = workspace.value.selectedNodes
   selectedNode.length && workspace.value.removeNode(selectedNode)
   workspace.value.cursor = 'default'
+}
+
+function isGroupSelection() {
+  const selectedNodes = workspace.value?.selectedNodes || []
+  return selectedNodes.length > 1
+}
+
+function isUngroupSelection() {
+  const selectedNodes = workspace.value?.selectedNodes || []
+  const hasGroup = selectedNodes.some(item => item instanceof GladeGroup)
+  return selectedNodes.length === 1 && hasGroup
+}
+
+function groupSelection() {
+  if (workspace.value) {
+    const selectedNode = workspace.value.selectedNodes
+    selectedNode.length && workspace.value.group(selectedNode)
+  }
+}
+
+function ungroupSelection() {
+  if (workspace.value) {
+    const selectedNode = workspace.value.selectedNodes
+    selectedNode.forEach(node => node instanceof GladeGroup && workspace.value?.ungroup(node))
+  }
 }
 </script>
 
