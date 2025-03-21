@@ -188,6 +188,14 @@ export class GladeWorkspace extends EventEmitter<GladeHooks> {
     return this.view.transformer.nodes()
   }
 
+  getFlattenedNodes(nodes: GladeNode[]): GladeNode[] {
+    return nodes.flatMap(node =>
+      node instanceof GladeGroup
+        ? this.getFlattenedNodes(node.children)
+        : [node],
+    )
+  }
+
   getNode(id: string) {
     return this.nodes.find(item => item.id === id)
   }
@@ -527,5 +535,38 @@ export class GladeWorkspace extends EventEmitter<GladeHooks> {
     nodes.forEach(node => node.setAttrs(attrs))
 
     this.callHook('node:update', nodes)
+  }
+
+  group(_nodes: GladeNode | GladeNode[]) {
+    const nodes = Array.isArray(_nodes) ? [...new Set(_nodes)] : [_nodes]
+
+    if (!nodes.length) {
+      return
+    }
+
+    const gorup = this.createNode('GladeGroup')
+
+    this.view.canvas.removeGladeNode(...nodes)
+    gorup.add(...nodes)
+    this.view.canvas.addGladeNode(gorup)
+    this.view.transformer.nodes([gorup])
+  }
+
+  ungroup(gorup: GladeGroup) {
+    const selectedNodes = this.selectedNodes
+
+    this.view.canvas.removeGladeNode(gorup)
+
+    const index = selectedNodes.indexOf(gorup)
+
+    if (index !== -1) {
+      selectedNodes.splice(index, 1)
+    }
+
+    this.view.canvas.addGladeNode(...gorup.children)
+
+    gorup._node.destroy()
+
+    this.view.transformer.nodes(selectedNodes)
   }
 }
