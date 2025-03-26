@@ -22,21 +22,15 @@ const showTabTools = reactive(new Set<string>([]))
 
 onMounted(() => {
   handleNodeSelect()
+  workspace.value?.on('history:change', handleNodeSelect)
   workspace.value?.on('history:undo', handleNodeSelect)
   workspace.value?.on('history:redo', handleNodeSelect)
-  workspace.value?.on('node:select', handleNodeSelect)
-  workspace.value?.on('node:cancel-select', handleNodeSelect)
-  workspace.value?.on('node:add', handleNodeSelect)
-  workspace.value?.on('node:remove', handleNodeSelect)
 })
 
 onUnmounted(() => {
+  workspace.value?.off('history:change', handleNodeSelect)
   workspace.value?.off('history:undo', handleNodeSelect)
   workspace.value?.off('history:redo', handleNodeSelect)
-  workspace.value?.off('node:select', handleNodeSelect)
-  workspace.value?.off('node:cancel-select', handleNodeSelect)
-  workspace.value?.off('node:add', handleNodeSelect)
-  workspace.value?.off('node:remove', handleNodeSelect)
 })
 
 async function handleNodeSelect() {
