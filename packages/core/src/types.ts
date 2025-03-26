@@ -95,6 +95,8 @@ export interface GladeHooks {
   'node:to-back': (e: GladeHookEvent) => void
   'node:forward': (e: GladeHookEvent) => void
   'node:to-front': (e: GladeHookEvent) => void
+  'node:group': (e: GladeHookEvent) => void
+  'node:ungroup': (e: GladeHookEvent) => void
   'node:update': (e: GladeHookEvent) => void
   'node:object': (e: GladeHookEvent) => void
   'node:load': (e: GladeHookEvent) => void
