@@ -13,8 +13,6 @@ export class GladePluginImageStore implements GladePlugin {
 
   store: LocalForage
 
-  cache = new Set<string>()
-
   constructor(public workspace: GladeWorkspace, options: GladePluginImageStoreOptions = {}) {
     const { enable = false } = options
 
@@ -22,39 +20,40 @@ export class GladePluginImageStore implements GladePlugin {
       name: 'GladeImageStore',
     })
 
-    this.store.keys().then((keys) => {
-      keys.forEach(key => this.cache.add(key))
-      this.workspace.nodes.forEach(async node => node instanceof GladeImage && await this.saveImage(node))
-    })
-
     enable && this.enable()
   }
 
-  enable() {
+  async enable() {
     if (!this.isEnable) {
       this.isEnable = true
+      await this.init()
+      await this.check()
       this.workspace.on('node:add', this.handleNodeAdd)
-      this.workspace.on('node:remove', this.handleNodeRemove)
-      this.workspace.on('history:undo', this.handleImage)
-      this.workspace.on('history:redo', this.handleImage)
+      this.workspace.on('node:load', this.handleNodeAdd)
     }
   }
 
   disable() {
     if (this.isEnable) {
       this.workspace.off('node:add', this.handleNodeAdd)
-      this.workspace.off('node:remove', this.handleNodeRemove)
-      this.workspace.off('history:undo', this.handleImage)
-      this.workspace.off('history:redo', this.handleImage)
+      this.workspace.off('node:load', this.handleNodeAdd)
       this.isEnable = false
     }
   }
 
-  private saveImage = async (node: GladeImage) => {
-    const imageId = node.imageId
-    const isSave = this.cache.has(imageId)
+  private init = async () => {
+    try {
+      const nodes = this.workspace.getFlattenedNodes(this.workspace.nodes)
+      nodes.forEach(async node => node instanceof GladeImage && await this.saveImage(node))
+    }
+    catch (error) {
+      console.error('Initialization failed:', error)
+    }
+  }
 
-    if (isSave) {
+  private saveImage = async (node: GladeImage) => {
+    try {
+      const imageId = node.imageId
       const imageData = await this.store.getItem<string>(imageId)
 
       if (imageData) {
@@ -62,58 +61,51 @@ export class GladePluginImageStore implements GladePlugin {
         image.src = imageData
         node.image(image)
       }
-    }
-    else {
-      const dataURL = node.dataURL
+      else {
+        const dataURL = node.dataURL
 
-      if (dataURL) {
-        await this.store.setItem(imageId, dataURL)
-        this.cache.add(imageId)
+        if (dataURL) {
+          await this.store.setItem(imageId, dataURL)
+        }
       }
+    }
+    catch (error) {
+      console.error('Error saving image:', error)
     }
   }
 
-  private deleteImage = async (node: GladeImage) => {
-    const imageId = node.imageId
-    const isSave = this.cache.has(imageId)
-
-    if (isSave) {
-      await this.store.removeItem(imageId)
-      this.cache.delete(imageId)
+  private deleteImage = async (imageId: string) => {
+    try {
+      const imageData = await this.store.getItem<string>(imageId)
+      imageData && await this.store.removeItem(imageId)
+    }
+    catch (error) {
+      console.error('Error deleting image:', error)
     }
   }
 
   private handleNodeAdd = async (e: GladeHookEvent) => {
     for (const node of e.nodes) {
-      if (node instanceof GladeImage)
-        await this.saveImage(node)
-    }
-  }
-
-  private handleNodeRemove = async (e: GladeHookEvent) => {
-    for (const node of e.nodes) {
-      if (node instanceof GladeImage)
-        this.deleteImage(node)
-    }
-  }
-
-  private handleImage = async (e: GladeHookEvent) => {
-    for (const node of e.nodes) {
       if (node instanceof GladeImage) {
-        const isExist = this.workspace.nodes.some(item => item.id === node.id)
+        await this.saveImage(node)
+      }
+    }
+  }
 
-        if (isExist) {
-          await this.saveImage(node)
-        }
-        else {
-          await this.deleteImage(node)
-        }
+  private check = async () => {
+    const keys = await this.store.keys()
+    const nodes = this.workspace.getFlattenedNodes(this.workspace.nodes)
+
+    for (const key of keys) {
+      const isUse = nodes.some(item => item instanceof GladeImage && item.imageId === key)
+
+      if (!isUse) {
+        await this.deleteImage(key)
       }
     }
   }
 
   destroy() {
     this.disable()
-    this.cache.clear()
   }
 }
