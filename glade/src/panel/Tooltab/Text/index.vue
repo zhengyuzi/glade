@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import type useGlade from '@/hooks/useGlade'
-import type { GladeHookEvent, GladeNode } from '@glade-app/core'
 import type { GladePluginTextConfig } from '@glade-app/plugins'
 import { GladeText } from '@glade-app/core'
 import { useDebounceFn } from '@vueuse/core'
@@ -20,29 +19,29 @@ const config = reactive<Required<GladePluginTextConfig>>({
 })
 
 const updateNode = useDebounceFn((config: Record<string, any>) => {
-  const selectedNodes = workspace.value?.getFlattenedNodes(workspace.value?.selectedNodes || []) || []
+  const selectedNodes = workspace.value?.getFlattenedNodes(workspace.value.selectedNodes) || []
   const nodes = selectedNodes.filter(node => node instanceof GladeText)
   workspace.value?.updateNode(nodes, config)
 }, 100)
 
 onMounted(() => {
   text?.config(config)
-  updateConfig(workspace.value?.selectedNodes || [])
-  workspace.value?.on('history:undo', handleHistory)
-  workspace.value?.on('history:redo', handleHistory)
+  updateConfig()
+  workspace.value?.on('node:select', updateConfig)
+  workspace.value?.on('node:cancel-select', updateConfig)
+  workspace.value?.on('history:undo', updateConfig)
+  workspace.value?.on('history:redo', updateConfig)
 })
 
 onUnmounted(() => {
-  workspace.value?.off('history:undo', handleHistory)
-  workspace.value?.off('history:redo', handleHistory)
+  workspace.value?.off('node:select', updateConfig)
+  workspace.value?.off('node:cancel-select', updateConfig)
+  workspace.value?.off('history:undo', updateConfig)
+  workspace.value?.off('history:redo', updateConfig)
 })
 
-function handleHistory(e: GladeHookEvent) {
-  updateConfig(e.nodes)
-}
-
-function updateConfig(_nodes: GladeNode[]) {
-  const nodes = workspace.value?.getFlattenedNodes(_nodes) || []
+function updateConfig() {
+  const nodes = workspace.value?.getFlattenedNodes(workspace.value.selectedNodes) || []
 
   const keys = Object.keys(config) as Array<keyof GladePluginTextConfig>
   const texts = nodes.filter(node => node instanceof GladeText)
@@ -54,12 +53,20 @@ function updateConfig(_nodes: GladeNode[]) {
 }
 
 function updateColor(value: string) {
+  if (config.fill === value) {
+    return
+  }
+
   config.fill = value
   text?.config({ fill: value })
   updateNode({ fill: value })
 }
 
 function updateOpacity(value: number[]) {
+  if (config.opacity === value[0]) {
+    return
+  }
+
   config.opacity = value[0]
   text?.config({ opacity: value[0] })
   updateNode({ opacity: value[0] })

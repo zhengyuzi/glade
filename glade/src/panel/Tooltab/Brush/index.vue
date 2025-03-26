@@ -2,7 +2,7 @@
 import type useGlade from '@/hooks/useGlade'
 import type { ISelect } from '@/types'
 import type { GladeBrushType, GladePluginBrushConfig } from '@glade-app/plugins'
-import { type GladeHookEvent, GladeLine, type GladeNode } from '@glade-app/core'
+import { GladeLine } from '@glade-app/core'
 import { useDebounceFn } from '@vueuse/core'
 import { useI18n } from 'vue-i18n'
 
@@ -27,29 +27,29 @@ const brushTypes: ISelect[] = [
 ]
 
 const updateNode = useDebounceFn((config: Record<string, any>) => {
-  const selectedNodes = workspace.value?.getFlattenedNodes(workspace.value?.selectedNodes || []) || []
+  const selectedNodes = workspace.value?.getFlattenedNodes(workspace.value.selectedNodes) || []
   const nodes = selectedNodes.filter(node => node instanceof GladeLine)
   workspace.value?.updateNode(nodes, config)
 }, 100)
 
 onMounted(() => {
   brush?.config(config)
-  updateConfig(workspace.value?.selectedNodes || [])
-  workspace.value?.on('history:undo', handleHistory)
-  workspace.value?.on('history:redo', handleHistory)
+  updateConfig()
+  workspace.value?.on('node:select', updateConfig)
+  workspace.value?.on('node:cancel-select', updateConfig)
+  workspace.value?.on('history:undo', updateConfig)
+  workspace.value?.on('history:redo', updateConfig)
 })
 
 onUnmounted(() => {
-  workspace.value?.off('history:undo', handleHistory)
-  workspace.value?.off('history:redo', handleHistory)
+  workspace.value?.off('node:select', updateConfig)
+  workspace.value?.off('node:cancel-select', updateConfig)
+  workspace.value?.off('history:undo', updateConfig)
+  workspace.value?.off('history:redo', updateConfig)
 })
 
-function handleHistory(e: GladeHookEvent) {
-  updateConfig(e.nodes)
-}
-
-function updateConfig(_nodes: GladeNode[]) {
-  const nodes = workspace.value?.getFlattenedNodes(_nodes) || []
+function updateConfig() {
+  const nodes = workspace.value?.getFlattenedNodes(workspace.value.selectedNodes) || []
 
   const keys = Object.keys(config) as Array<keyof GladePluginBrushConfig>
   const lines = nodes.filter(node => node instanceof GladeLine)
@@ -61,24 +61,40 @@ function updateConfig(_nodes: GladeNode[]) {
 }
 
 function updateWidth(value: number[]) {
+  if (config.strokeWidth === value[0]) {
+    return
+  }
+
   config.strokeWidth = value[0]
   brush?.config({ strokeWidth: value[0] })
   updateNode({ strokeWidth: value[0] })
 }
 
 function updateOpacity(value: number[]) {
+  if (config.opacity === value[0]) {
+    return
+  }
+
   config.opacity = value[0]
   brush?.config({ opacity: value[0] })
   updateNode({ opacity: value[0] })
 }
 
 function updateColor(value: string) {
+  if (config.stroke === value) {
+    return
+  }
+
   config.stroke = value
   brush?.config({ stroke: value })
   updateNode({ stroke: value })
 }
 
 function updateBrushType(type: GladeBrushType) {
+  if (config.brushType === type) {
+    return
+  }
+
   config.brushType = type
   brush?.config({ brushType: type })
   updateNode({ brushType: type })

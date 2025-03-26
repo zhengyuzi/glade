@@ -1,8 +1,5 @@
 <script setup lang="ts">
 import type useGlade from '@/hooks/useGlade'
-import type { GladeNode } from '@glade-app/core'
-import { GladeGroup } from '@glade-app/core'
-import { promiseTimeout } from '@vueuse/core'
 import BrushTab from './Brush/index.vue'
 import TextTab from './Text/index.vue'
 
@@ -22,41 +19,28 @@ const showTabTools = reactive(new Set<string>([]))
 
 onMounted(() => {
   handleNodeSelect()
-  workspace.value?.on('history:change', handleNodeSelect)
+  workspace.value?.on('node:select', handleNodeSelect)
+  workspace.value?.on('node:cancel-select', handleNodeSelect)
   workspace.value?.on('history:undo', handleNodeSelect)
   workspace.value?.on('history:redo', handleNodeSelect)
 })
 
 onUnmounted(() => {
-  workspace.value?.off('history:change', handleNodeSelect)
+  workspace.value?.off('node:select', handleNodeSelect)
+  workspace.value?.off('node:cancel-select', handleNodeSelect)
   workspace.value?.off('history:undo', handleNodeSelect)
   workspace.value?.off('history:redo', handleNodeSelect)
 })
 
 async function handleNodeSelect() {
-  await promiseTimeout(0)
-
-  const selectedNodes = workspace.value?.selectedNodes || []
+  const nodes = workspace.value?.getFlattenedNodes(workspace.value.selectedNodes) || []
 
   showTabTools.clear()
 
-  if (!selectedNodes.length) {
-    return
-  }
-
-  await promiseTimeout(0)
-
-  selectedNodes.forEach(node => addTabType(node))
-}
-
-function addTabType(node: GladeNode) {
-  if (node instanceof GladeGroup) {
-    node.children.forEach(n => addTabType(n))
-  }
-  else {
+  nodes.forEach((node) => {
     const type = classNames[node.className as keyof typeof classNames]
     type && showTabTools.add(type)
-  }
+  })
 }
 </script>
 
