@@ -60,10 +60,10 @@ function updateValue(value: AcceptableValue) {
               class="text-xs leading-none text-sm text-gray-500 flex items-center p-2 relative select-none cursor-pointer rounded data-[disabled]:pointer-events-none outline-none hover:bg-gray-300"
               :value="option.value"
             >
-              <SelectItemIndicator class="absolute left-0 p-1 inline-flex items-center justify-center">
+              <SelectItemIndicator class="absolute left-1 text-lg inline-flex items-center justify-center">
                 <i class="i-material-symbols-check-small-rounded" />
               </SelectItemIndicator>
-              <SelectItemText>
+              <SelectItemText class="pl-4">
                 {{ option.label }}
               </SelectItemText>
             </SelectItem>
