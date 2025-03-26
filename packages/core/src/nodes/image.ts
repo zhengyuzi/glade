@@ -46,18 +46,15 @@ export class GladeImage extends GladeNodeBase<KonvaImage> {
     return (this._node.image() as HTMLImageElement)?.getAttribute('src')
   }
 
-  image(image?: CanvasImageSource) {
-    if (!image) {
-      return this._node.getAttr('image')
-    }
-
+  image(image: CanvasImageSource) {
     ;(image as HTMLImageElement).onload = () => {
       this._node.sceneFunc((ctx, shape) => {
         ctx.drawImage(image, 0, 0, shape.width(), shape.height())
         ctx.fillShape(shape)
       })
-      this._node.setAttr('image', image)
     }
+
+    this._node.setAttr('image', image)
 
     return this
   }
