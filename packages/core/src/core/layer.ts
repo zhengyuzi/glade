@@ -26,4 +26,9 @@ export class GladeLayer extends Konva.Layer {
     })
     return this
   }
+
+  clearGladeNode() {
+    this.destroyChildren()
+    this.gladeNodes = []
+  }
 }
