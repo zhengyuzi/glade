@@ -384,7 +384,7 @@ export class GladeWorkspace extends EventEmitter<GladeHooks> {
 
         const n = this.createNode(item.className, {
           ...item.attrs,
-          id: !id || isExist ? nanoid() : id,
+          id: !id && isExist ? nanoid() : id,
         })
 
         if (n instanceof GladeGroup && item.children) {
@@ -406,7 +406,7 @@ export class GladeWorkspace extends EventEmitter<GladeHooks> {
     const nodes = processNodes(_nodes)
 
     if (selectedNodes.length > 0) {
-      this.view.transformer.nodes([...this.selectedNodes, ...selectedNodes])
+      this.view.transformer.nodes(selectedNodes)
     }
 
     this.callHook('node:load', nodes)
@@ -540,32 +540,46 @@ export class GladeWorkspace extends EventEmitter<GladeHooks> {
   group(_nodes: GladeNode | GladeNode[]) {
     const nodes = Array.isArray(_nodes) ? [...new Set(_nodes)] : [_nodes]
 
+    const selectedNodes = [...this.selectedNodes]
+
     if (!nodes.length) {
       return
     }
 
-    const gorup = this.createNode('GladeGroup')
+    const group = this.createNode('GladeGroup')
 
-    this.view.canvas.removeGladeNode(...nodes)
-    gorup.add(...nodes)
-    this.view.canvas.addGladeNode(gorup)
-    this.view.transformer.nodes([gorup])
+    for (const node of nodes) {
+      const index = selectedNodes.indexOf(node)
+
+      if (index !== -1) {
+        selectedNodes.splice(index, 1)
+      }
+
+      this.view.canvas.removeGladeNode(node)
+      group.add(node)
+    }
+
+    this.view.canvas.addGladeNode(group)
+
+    this.view.transformer.nodes([group])
+
+    this.callHook('node:group', [group])
   }
 
-  ungroup(gorup: GladeGroup) {
+  ungroup(group: GladeGroup) {
     const selectedNodes = this.selectedNodes
 
-    this.view.canvas.removeGladeNode(gorup)
+    this.view.canvas.removeGladeNode(group)
 
-    const index = selectedNodes.indexOf(gorup)
+    const index = selectedNodes.indexOf(group)
 
     if (index !== -1) {
       selectedNodes.splice(index, 1)
     }
 
-    this.view.canvas.addGladeNode(...gorup.children)
+    this.callHook('node:ungroup', [group])
 
-    gorup._node.destroy()
+    this.view.canvas.addGladeNode(...group.children)
 
     this.view.transformer.nodes(selectedNodes)
   }
