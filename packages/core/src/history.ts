@@ -25,6 +25,8 @@ export class GladeHistory {
     workspace.on('node:forward', this.handleEvent)
     workspace.on('node:to-front', this.handleEvent)
     workspace.on('node:update', this.handleEvent)
+    workspace.on('node:group', this.handleEvent)
+    workspace.on('node:ungroup', this.handleEvent)
   }
 
   get isUndo() {
