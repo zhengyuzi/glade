@@ -12,7 +12,7 @@ export class GladeHistory {
   maxLength = 20
 
   constructor(private view: GladeCore, private workspace: GladeWorkspace) {
-    this.defaultNodes = workspace.objectNode(workspace.nodes, { dataURL: true })
+    this.defaultNodes = workspace.objectNode(workspace.nodes)
 
     workspace.on('node:add', this.handleEvent)
     workspace.on('node:remove', this.handleEvent)
@@ -43,7 +43,7 @@ export class GladeHistory {
       this.historys = this.historys.slice(0, this.currentIndex + 1)
     }
 
-    const nodes = this.workspace.objectNode(this.workspace.nodes, { dataURL: true })
+    const nodes = this.workspace.objectNode(this.workspace.nodes)
 
     const history: GladeHistoryItem = {
       type: e.type,
