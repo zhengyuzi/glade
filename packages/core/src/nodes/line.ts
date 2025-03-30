@@ -8,6 +8,7 @@ export class GladeLine extends GladeNodeBase<Line> {
   constructor(config: GladeLineConfig = {}) {
     const node = new Line({
       strokeScaleEnabled: false,
+      opacity: 1,
       ...config,
     })
 
