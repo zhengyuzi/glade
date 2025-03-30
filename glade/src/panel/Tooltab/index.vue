@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type useGlade from '@/hooks/useGlade'
+import { promiseTimeout } from '@vueuse/core'
 import BrushTab from './Brush/index.vue'
 import TextTab from './Text/index.vue'
 
@@ -19,6 +20,8 @@ const showTabTools = reactive(new Set<string>([]))
 
 onMounted(() => {
   handleNodeSelect()
+  workspace.value?.on('node:add', handleNodeSelect)
+  workspace.value?.on('node:remove', handleNodeSelect)
   workspace.value?.on('node:select', handleNodeSelect)
   workspace.value?.on('node:cancel-select', handleNodeSelect)
   workspace.value?.on('history:undo', handleNodeSelect)
@@ -26,6 +29,8 @@ onMounted(() => {
 })
 
 onUnmounted(() => {
+  workspace.value?.off('node:add', handleNodeSelect)
+  workspace.value?.off('node:remove', handleNodeSelect)
   workspace.value?.off('node:select', handleNodeSelect)
   workspace.value?.off('node:cancel-select', handleNodeSelect)
   workspace.value?.off('history:undo', handleNodeSelect)
@@ -33,6 +38,8 @@ onUnmounted(() => {
 })
 
 async function handleNodeSelect() {
+  await promiseTimeout(0)
+
   const nodes = workspace.value?.getFlattenedNodes(workspace.value.selectedNodes) || []
 
   showTabTools.clear()

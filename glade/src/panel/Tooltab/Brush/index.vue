@@ -51,6 +51,10 @@ onUnmounted(() => {
 function updateConfig() {
   const nodes = workspace.value?.getFlattenedNodes(workspace.value.selectedNodes) || []
 
+  if (!nodes.length) {
+    return
+  }
+
   const keys = Object.keys(config) as Array<keyof GladePluginBrushConfig>
   const lines = nodes.filter(node => node instanceof GladeLine)
 

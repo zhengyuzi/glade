@@ -43,6 +43,10 @@ onUnmounted(() => {
 function updateConfig() {
   const nodes = workspace.value?.getFlattenedNodes(workspace.value.selectedNodes) || []
 
+  if (!nodes.length) {
+    return
+  }
+
   const keys = Object.keys(config) as Array<keyof GladePluginTextConfig>
   const texts = nodes.filter(node => node instanceof GladeText)
 
