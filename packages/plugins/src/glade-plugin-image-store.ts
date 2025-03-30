@@ -54,6 +54,7 @@ export class GladePluginImageStore implements GladePlugin {
   private saveImage = async (node: GladeImage) => {
     try {
       const imageId = node.imageId
+      const dataURL = node.dataURL
       const imageData = await this.store.getItem<string>(imageId)
 
       if (imageData) {
@@ -61,12 +62,8 @@ export class GladePluginImageStore implements GladePlugin {
         image.src = imageData
         node.image(image)
       }
-      else {
-        const dataURL = node.dataURL
-
-        if (dataURL) {
-          await this.store.setItem(imageId, dataURL)
-        }
+      else if (dataURL) {
+        await this.store.setItem(imageId, dataURL)
       }
     }
     catch (error) {
@@ -85,7 +82,9 @@ export class GladePluginImageStore implements GladePlugin {
   }
 
   private handleNodeAdd = async (e: GladeHookEvent) => {
-    for (const node of e.nodes) {
+    const nodes = this.workspace.getFlattenedNodes(e.nodes)
+
+    for (const node of nodes) {
       if (node instanceof GladeImage) {
         await this.saveImage(node)
       }
