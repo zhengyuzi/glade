@@ -377,8 +377,9 @@ export class GladeWorkspace extends EventEmitter<GladeHooks> {
   loadNode(_nodes: GladeNodeObj[]) {
     const selectedNodes: GladeNode[] = []
 
-    const processNodes = (nodes: GladeNodeObj[]): GladeNode[] => {
-      return nodes.map((item) => {
+    const processNodes = (nodes: GladeNodeObj[]): GladeNode[] => nodes
+      .sort((a, b) => a.zIndex - b.zIndex)
+      .map((item) => {
         const id = item.attrs.id
         const isExist = !!this.getNode(id)
 
@@ -395,13 +396,12 @@ export class GladeWorkspace extends EventEmitter<GladeHooks> {
           n.setAttrs({ dataURL: undefined })
         }
 
-        if (item.isSelect && !isExist) {
+        if (item.isSelect) {
           selectedNodes.push(n)
         }
 
         return n
       })
-    }
 
     const nodes = processNodes(_nodes)
 
