@@ -59,22 +59,18 @@ const nodeMenu = reactive<IContextMenu[]>([
     text: t('group_selection'),
     hotkey: 'Ctrl+G',
     fn: () => groupSelection(),
-    show: () => isGroupSelection(),
-  },
-  {
-    type: 'separator',
-    show: () => isGroupSelection(),
+    show: () => isMultipleNodes(),
   },
   {
     type: 'item',
     text: t('ungroup_selection'),
     hotkey: 'Ctrl+G',
     fn: () => ungroupSelection(),
-    show: () => isUngroupSelection(),
+    show: () => isGroup(),
   },
   {
     type: 'separator',
-    show: () => isUngroupSelection(),
+    show: () => isMultipleNodes() || isGroup(),
   },
   {
     type: 'item',
@@ -124,6 +120,7 @@ onMounted(async () => {
   hotkey('Ctrl+]', () => bringForward())
   hotkey('Ctrl+Shift+[', () => sendToBack())
   hotkey('Ctrl+Shift+]', () => bringToFront())
+  hotkey('Ctrl+G', () => changeGroupSelection())
   hotkey('Delete', () => remove())
 })
 
@@ -138,6 +135,7 @@ onUnmounted(() => {
   unhotkey('Ctrl+]')
   unhotkey('Ctrl+Shift+[')
   unhotkey('Ctrl+Shift+]')
+  unhotkey('Ctrl+G')
   unhotkey('Delete')
 })
 
@@ -260,15 +258,14 @@ function remove() {
   workspace.value.cursor = 'default'
 }
 
-function isGroupSelection() {
+function isMultipleNodes() {
   const selectedNodes = workspace.value?.selectedNodes || []
   return selectedNodes.length > 1
 }
 
-function isUngroupSelection() {
+function isGroup() {
   const selectedNodes = workspace.value?.selectedNodes || []
-  const hasGroup = selectedNodes.some(item => item instanceof GladeGroup)
-  return selectedNodes.length === 1 && hasGroup
+  return selectedNodes.length === 1 && selectedNodes.some(item => item instanceof GladeGroup)
 }
 
 function groupSelection() {
@@ -282,6 +279,15 @@ function ungroupSelection() {
   if (workspace.value) {
     const selectedNode = workspace.value.selectedNodes
     selectedNode.forEach(node => node instanceof GladeGroup && workspace.value?.ungroup(node))
+  }
+}
+
+function changeGroupSelection() {
+  if (isGroup()) {
+    ungroupSelection()
+  }
+  else if (isMultipleNodes()) {
+    groupSelection()
   }
 }
 </script>
