@@ -405,9 +405,7 @@ export class GladeWorkspace extends EventEmitter<GladeHooks> {
 
     const nodes = processNodes(_nodes)
 
-    if (selectedNodes.length > 0) {
-      this.view.transformer.nodes(selectedNodes)
-    }
+    this.view.transformer.nodes(selectedNodes)
 
     this.callHook('node:load', nodes)
 
