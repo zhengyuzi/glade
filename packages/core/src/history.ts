@@ -37,7 +37,9 @@ export class GladeHistory {
     return !!this.historys.length && this.currentIndex < this.historys.length - 1
   }
 
-  private handleEvent = (e: GladeHookEvent) => {
+  private handleEvent = async (e: GladeHookEvent) => {
+    await new Promise(resolve => setTimeout(resolve, 50))
+
     // Cut `history` to current index.
     if (this.currentIndex !== this.historys.length - 1) {
       this.historys = this.historys.slice(0, this.currentIndex + 1)
